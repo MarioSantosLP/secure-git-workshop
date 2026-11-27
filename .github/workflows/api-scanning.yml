@@ -44,9 +44,9 @@ jobs:
         pushd "${{env.APP_DIR}}"
         if [ "${{env.DELETE_FLAG}}" == "true" ]
         then
-          docker-compose rm -f web
-          docker-compose rm -f py-web
-          docker-compose rm -f zap2docker
+          docker compose rm -f web
+          docker compose rm -f py-web
+          docker compose rm -f zap2docker
         fi
         popd
 
@@ -54,18 +54,18 @@ jobs:
     - name: Run-API
       run: |-
         pushd "${{env.APP_DIR}}"
-        docker-compose build --no-cache web
-        docker-compose up -d web
-        docker-compose logs web
+        docker compose build --no-cache web
+        docker compose up -d web
+        docker compose logs web
         popd
         
     # Serve Goat OpenAPI definition
     - name: Serve-API-Definition
       run: |-
         pushd "${{env.APP_DIR}}"
-        docker-compose build --no-cache py-web
-        docker-compose up -d py-web
-        docker-compose logs py-web
+        docker compose build --no-cache py-web
+        docker compose up -d py-web
+        docker compose logs py-web
         popd
         
     # Launch API scan
@@ -75,7 +75,7 @@ jobs:
       run: |-
         pushd "${{env.APP_DIR}}"
         test -d "${REPORT_FOLDER}" || mkdir -p "${REPORT_FOLDER}"
-        docker-compose run --name "${{env.CONTAINER_NAME}}" -d -e ENV="${{env.ENV}}" -e REPORT_FILE="${{env.API_REPORT_FILE}}" -e TARGET="${{env.API_TARGET}}" zap2docker
+        docker compose run --name "${{env.CONTAINER_NAME}}" -d -e ENV="${{env.ENV}}" -e REPORT_FILE="${{env.API_REPORT_FILE}}" -e TARGET="${{env.API_TARGET}}" zap2docker
         docker logs -f "${{env.CONTAINER_NAME}}"
         popd
 
